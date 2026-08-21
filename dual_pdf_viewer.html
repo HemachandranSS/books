@@ -469,7 +469,7 @@
         const topRevealZone = document.getElementById('topRevealZone');
 
         const params = new URLSearchParams(window.location.search);
-        const bookName = params.get('book');
+        const bookName = normalizeBookFolder(params.get('book'));
         const pdfParam = params.get('pdf');
         let headerHideTimer = null;
         let headerPinned = false;
@@ -616,7 +616,8 @@
         async function loadBookFromFolder(folder) {
             showLoading();
             try {
-                bookFolderPath = folder.split('/').map(encodeURIComponent).join('/');
+                const normalizedFolder = normalizeBookFolder(folder);
+                bookFolderPath = normalizedFolder.split('/').map(encodeURIComponent).join('/');
                 bookPages = [];
                 bookPageBuffers = [];
                 bookHasMore = true;
@@ -626,7 +627,7 @@
                 totalPages = 0;
                 currentPage = 1;
                 hideLoading();
-                subtitle.textContent = `${titleize(folder)} · loading pages on demand`;
+                subtitle.textContent = `${titleize(normalizedFolder)} · loading pages on demand`;
                 pageInfo.textContent = `Page 1`;
                 resolveBookTotalPages().then((count) => {
                     if (typeof count === 'number' && count > 0) {
@@ -666,46 +667,48 @@
         async function renderPages() {
             if (!pdfDoc) return;
 
-            pagesContainer.innerHTML = '';
-            const shouldCenter = !hasZoomed;
             mainContent.classList.toggle('zoomed-state', hasZoomed);
+            const nextContainer = document.createElement('div');
+            nextContainer.className = 'pages-container';
 
             // First page is always single (cover page)
             if (currentPage === 1) {
-                await renderPage(1, 'single');
+                await renderPage(1, 'single', nextContainer);
             } else {
                 // For pages 2 and onwards, show dual pages
                 // Left page (even page numbers starting from 2)
                 if (currentPage <= totalPages) {
-                    await renderPage(currentPage, 'left');
+                    await renderPage(currentPage, 'left', nextContainer);
                 }
 
                 // Right page (odd page numbers starting from 3)
                 if (currentPage + 1 <= totalPages) {
-                    await renderPage(currentPage + 1, 'right');
+                    await renderPage(currentPage + 1, 'right', nextContainer);
                 }
             }
+            swapPagesContainer(nextContainer);
             settleViewportAfterRender();
         }
 
         async function renderBookPages() {
-            pagesContainer.innerHTML = '';
-            const shouldCenter = !hasZoomed;
             mainContent.classList.toggle('zoomed-state', hasZoomed);
+            const nextContainer = document.createElement('div');
+            nextContainer.className = 'pages-container';
 
             if (currentPage === 1) {
-                await renderBookPage(1, 'single');
+                await renderBookPage(1, 'single', nextContainer);
             } else {
-                await renderBookPage(currentPage, 'left');
-                await renderBookPage(currentPage + 1, 'right');
+                await renderBookPage(currentPage, 'left', nextContainer);
+                await renderBookPage(currentPage + 1, 'right', nextContainer);
             }
+            swapPagesContainer(nextContainer);
             settleViewportAfterRender();
         }
 
-        async function renderBookPage(pageNum, position) {
+        async function renderBookPage(pageNum, position, targetContainer) {
             const buffer = await getBookPageBuffer(pageNum);
             if (!buffer) return;
-            await renderPdfBuffer(buffer, position);
+            await renderPdfBuffer(buffer, position, targetContainer);
         }
 
         async function getBookPageBuffer(pageNum) {
@@ -717,7 +720,7 @@
                 return null;
             }
 
-            const pageUrl = `${bookFolderPath}/${pageNum}.pdf`;
+            const pageUrl = `${normalizeBookFolder(bookFolderPath)}/${pageNum}.pdf`;
             const response = await fetch(pageUrl, { method: 'GET' });
             if (!response.ok) {
                 bookHasMore = false;
@@ -725,7 +728,7 @@
             }
 
             bookPages[pageNum - 1] = pageUrl;
-            const buffer = await response.arrayBuffer();
+            const buffer = new Uint8Array(await response.arrayBuffer());
             bookPageBuffers[pageNum - 1] = buffer;
             totalPages = Math.max(totalPages, pageNum);
             return buffer;
@@ -753,13 +756,14 @@
         }
 
         async function pageExists(pageNum) {
-            const pageUrl = `${bookFolderPath}/${pageNum}.pdf`;
+            const pageUrl = `${normalizeBookFolder(bookFolderPath)}/${pageNum}.pdf`;
             const response = await fetch(pageUrl, { method: 'HEAD', cache: 'no-store' });
             return response.ok;
         }
 
-        async function renderPdfBuffer(arrayBuffer, position) {
-            const doc = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+        async function renderPdfBuffer(arrayBuffer, position, targetContainer) {
+            const data = arrayBuffer instanceof Uint8Array ? new Uint8Array(arrayBuffer) : new Uint8Array(arrayBuffer);
+            const doc = await pdfjsLib.getDocument({ data }).promise;
             const page = await doc.getPage(1);
             const viewport = page.getViewport({ scale });
 
@@ -772,12 +776,12 @@
             const wrapper = document.createElement('div');
             wrapper.className = `page-wrapper ${position === 'single' ? 'single-page' : ''}`;
             wrapper.appendChild(canvas);
-            pagesContainer.appendChild(wrapper);
+            (targetContainer || pagesContainer).appendChild(wrapper);
 
             await page.render({ canvasContext: context, viewport }).promise;
         }
 
-        async function renderPage(pageNum, position) {
+        async function renderPage(pageNum, position, targetContainer) {
             try {
                 const page = await pdfDoc.getPage(pageNum);
                 const viewport = page.getViewport({ scale });
@@ -793,7 +797,7 @@
                 wrapper.className = `page-wrapper ${position === 'single' ? 'single-page' : ''}`;
                 wrapper.appendChild(canvas);
 
-                pagesContainer.appendChild(wrapper);
+                (targetContainer || pagesContainer).appendChild(wrapper);
 
                 const renderContext = {
                     canvasContext: context,
@@ -804,6 +808,11 @@
             } catch (error) {
                 console.error(`Error rendering page ${pageNum}:`, error);
             }
+        }
+
+        function swapPagesContainer(nextContainer) {
+            pagesContainer.replaceChildren(...nextContainer.children);
+            pagesContainer.style.display = 'flex';
         }
 
         function showPrevPage() {
@@ -934,7 +943,6 @@
 
         function restoreZoomAnchor() {
             requestAnimationFrame(() => {
-                updateViewportFitMode();
                 if (!zoomAnchor) {
                     mainContent.scrollLeft = 0;
                     mainContent.scrollTop = 0;
@@ -947,6 +955,7 @@
                 const maxTop = Math.max(0, mainContent.scrollHeight - mainContent.clientHeight);
                 mainContent.scrollLeft = Math.min(Math.max(0, targetLeft), maxLeft);
                 mainContent.scrollTop = Math.min(Math.max(0, targetTop), maxTop);
+                zoomAnchor = null;
             });
         }
 
@@ -975,6 +984,15 @@
             return value
                 .replace(/[_-]+/g, ' ')
                 .replace(/\b\w/g, (ch) => ch.toUpperCase());
+        }
+
+        function normalizeBookFolder(folder) {
+            const cleaned = (folder || '')
+                .replace(/^\/+/, '')
+                .replace(/\/+$/, '');
+
+            if (!cleaned) return cleaned;
+            return cleaned.startsWith('books/') ? cleaned : `books/${cleaned}`;
         }
     </script>
 </body>
