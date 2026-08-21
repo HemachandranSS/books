@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Books</title>
+    <style>
+        :root {
+            --bg: #0b1020;
+            --panel: rgba(255, 255, 255, 0.08);
+            --panel-border: rgba(255, 255, 255, 0.14);
+            --text: #f5f7fb;
+            --muted: rgba(245, 247, 251, 0.72);
+            --accent: #8dd6ff;
+            --accent-2: #7c9cff;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: Georgia, "Times New Roman", serif;
+            color: var(--text);
+            background:
+                radial-gradient(circle at top left, rgba(141, 214, 255, 0.24), transparent 30%),
+                radial-gradient(circle at top right, rgba(124, 156, 255, 0.2), transparent 28%),
+                linear-gradient(135deg, #080b16 0%, #10182c 55%, #0f1b2f 100%);
+        }
+
+        .shell {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 40px 20px 56px;
+        }
+
+        .hero {
+            display: flex;
+            justify-content: space-between;
+            align-items: end;
+            gap: 24px;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: clamp(2.2rem, 5vw, 4rem);
+            letter-spacing: -0.04em;
+            line-height: 0.95;
+        }
+
+        .lede {
+            margin: 12px 0 0;
+            max-width: 58ch;
+            color: var(--muted);
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .count {
+            padding: 12px 16px;
+            border: 1px solid var(--panel-border);
+            background: var(--panel);
+            border-radius: 999px;
+            color: var(--muted);
+            backdrop-filter: blur(16px);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+        }
+
+        .section {
+            margin-top: 28px;
+        }
+
+        .section:first-of-type {
+            margin-top: 0;
+        }
+
+        .section-head {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .section-title {
+            margin: 0;
+            font-size: 1.45rem;
+            letter-spacing: -0.02em;
+        }
+
+        .section-note {
+            color: var(--muted);
+            font-size: 0.92rem;
+        }
+
+        .card {
+            display: block;
+            text-decoration: none;
+            color: inherit;
+            padding: 18px 18px 20px;
+            border-radius: 20px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.06));
+            border: 1px solid var(--panel-border);
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.22);
+            backdrop-filter: blur(18px);
+            transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
+            min-height: 132px;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(141, 214, 255, 0.45);
+            background: linear-gradient(180deg, rgba(141, 214, 255, 0.16), rgba(255, 255, 255, 0.06));
+        }
+
+        .card-title {
+            font-size: 1.35rem;
+            margin: 0 0 10px;
+        }
+
+        .card-meta {
+            color: var(--muted);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .empty {
+            margin-top: 24px;
+            padding: 24px;
+            border-radius: 18px;
+            background: var(--panel);
+            border: 1px solid var(--panel-border);
+            color: var(--muted);
+        }
+
+        .footer {
+            margin-top: 28px;
+            color: var(--muted);
+            font-size: 0.92rem;
+        }
+
+        @media (max-width: 640px) {
+            .shell {
+                padding-top: 28px;
+            }
+
+            .count {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="shell">
+        <section class="hero">
+            <div>
+                <h1>Books</h1>
+                <p class="lede">Pick a book folder to open its numbered PDF pages in the viewer. The viewer expects files like `1.pdf`, `2.pdf`, continuing through the last page in that folder.</p>
+            </div>
+            <div id="count" class="count"></div>
+        </section>
+
+        <section class="section">
+            <div class="section-head">
+                <h2 class="section-title">Books</h2>
+                <div id="booksCount" class="section-note"></div>
+            </div>
+            <section id="grid" class="grid"></section>
+        </section>
+
+        <section class="section">
+            <div class="section-head">
+                <h2 class="section-title">Visual Books</h2>
+                <div id="visualCount" class="section-note"></div>
+            </div>
+            <section id="visualGrid" class="grid"></section>
+        </section>
+
+        <div id="empty" class="empty" style="display:none;">No book folders were found in this directory.</div>
+        <div class="footer">Click any book to open it in the dual-page viewer.</div>
+    </main>
+
+    <script>
+        const books = [
+            'baby_play_for_every_day'
+        ];
+        const visualBooks = [
+            'visual-books/Scientists_-_Dorling_Kindersley',
+            'visual-books/baby_play_for_every_day'
+        ];
+
+        const grid = document.getElementById('grid');
+        const visualGrid = document.getElementById('visualGrid');
+        const empty = document.getElementById('empty');
+        const count = document.getElementById('count');
+        const booksCount = document.getElementById('booksCount');
+        const visualCount = document.getElementById('visualCount');
+
+        count.textContent = `${books.length + visualBooks.length} folder${books.length + visualBooks.length === 1 ? '' : 's'}`;
+        booksCount.textContent = `${books.length} folder${books.length === 1 ? '' : 's'}`;
+        visualCount.textContent = `${visualBooks.length} folder${visualBooks.length === 1 ? '' : 's'}`;
+
+        if (!books.length && !visualBooks.length) {
+            empty.style.display = 'block';
+        } else {
+            grid.innerHTML = books.map((book) => {
+                const title = titleize(book);
+                return `
+                    <a class="card" href="dual_pdf_viewer.html?book=${encodeURIComponent(book)}">
+                        <h2 class="card-title">${title}</h2>
+                        <div class="card-meta">Open numbered PDFs from <strong>${book}/</strong> as a book</div>
+                    </a>
+                `;
+            }).join('');
+
+            visualGrid.innerHTML = visualBooks.map((book) => {
+                const title = titleize(book.split('/').pop());
+                return `
+                    <a class="card" href="dual_pdf_viewer.html?book=${encodeURIComponent(book)}">
+                        <h2 class="card-title">${title}</h2>
+                        <div class="card-meta">Open numbered PDFs from <strong>${book}/</strong> as a visual book</div>
+                    </a>
+                `;
+            }).join('');
+        }
+
+        function titleize(value) {
+            return value
+                .replace(/[_-]+/g, ' ')
+                .replace(/\b\w/g, (ch) => ch.toUpperCase());
+        }
+    </script>
+</body>
+
+</html>
