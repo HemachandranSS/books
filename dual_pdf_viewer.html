@@ -444,6 +444,10 @@
         let totalPages = 0;
         let bookMode = false;
         let bookPages = [];
+        let bookPageBuffers = [];
+        let bookFolderPath = '';
+        let bookHasMore = true;
+        let bookTotalPagesResolved = false;
         let hasZoomed = false;
         let zoomAnchor = null;
         let hasLoadedInitialView = false;
@@ -612,28 +616,31 @@
         async function loadBookFromFolder(folder) {
             showLoading();
             try {
-                const pages = [];
-                const folderPath = folder.split('/').map(encodeURIComponent).join('/');
-                for (let i = 1; ; i++) {
-                    const pageUrl = `${folderPath}/${i}.pdf`;
-                    const response = await fetch(pageUrl, { method: 'GET' });
-                    if (!response.ok) break;
-                    pages.push(pageUrl);
-                }
-
-                if (!pages.length) {
-                    throw new Error('No numbered PDF pages found.');
-                }
-
+                bookFolderPath = folder.split('/').map(encodeURIComponent).join('/');
+                bookPages = [];
+                bookPageBuffers = [];
+                bookHasMore = true;
+                bookTotalPagesResolved = false;
                 pdfDoc = null;
-                bookPages = pages;
                 hasZoomed = false;
-                totalPages = pages.length;
+                totalPages = 0;
                 currentPage = 1;
                 hideLoading();
-                subtitle.textContent = `${titleize(folder)} · ${totalPages} page PDF${totalPages === 1 ? '' : 's'}`;
-                pageInfo.textContent = `Page 1 of ${totalPages}`;
-                renderBookPages(pages);
+                subtitle.textContent = `${titleize(folder)} · loading pages on demand`;
+                pageInfo.textContent = `Page 1`;
+                resolveBookTotalPages().then((count) => {
+                    if (typeof count === 'number' && count > 0) {
+                        totalPages = count;
+                        bookHasMore = currentPage < totalPages;
+                        bookTotalPagesResolved = true;
+                        clampBookPageToTotal();
+                        updatePageInfo();
+                        updateNavigationButtons();
+                    }
+                }).catch((error) => {
+                    console.warn('Could not resolve book total pages:', error);
+                });
+                renderBookPages();
                 updateNavigationButtons();
             } catch (error) {
                 console.error('Error loading book folder:', error);
@@ -681,30 +688,78 @@
             settleViewportAfterRender();
         }
 
-        async function renderBookPages(pageUrls) {
+        async function renderBookPages() {
             pagesContainer.innerHTML = '';
             const shouldCenter = !hasZoomed;
             mainContent.classList.toggle('zoomed-state', hasZoomed);
 
             if (currentPage === 1) {
-                await renderPdfUrl(pageUrls[0], 'single');
+                await renderBookPage(1, 'single');
             } else {
-                const leftIndex = currentPage - 1;
-                const rightIndex = currentPage;
-                if (leftIndex < pageUrls.length) {
-                    await renderPdfUrl(pageUrls[leftIndex], 'left');
-                }
-                if (rightIndex < pageUrls.length) {
-                    await renderPdfUrl(pageUrls[rightIndex], 'right');
-                }
+                await renderBookPage(currentPage, 'left');
+                await renderBookPage(currentPage + 1, 'right');
             }
             settleViewportAfterRender();
         }
 
-        async function renderPdfUrl(url, position) {
-            const response = await fetch(url);
-            const arrayBuffer = await response.arrayBuffer();
-            const doc = await pdfjsLib.getDocument(arrayBuffer).promise;
+        async function renderBookPage(pageNum, position) {
+            const buffer = await getBookPageBuffer(pageNum);
+            if (!buffer) return;
+            await renderPdfBuffer(buffer, position);
+        }
+
+        async function getBookPageBuffer(pageNum) {
+            if (pageNum <= 0) return null;
+            if (bookPageBuffers[pageNum - 1]) {
+                return bookPageBuffers[pageNum - 1];
+            }
+            if (!bookHasMore && pageNum > bookPages.length) {
+                return null;
+            }
+
+            const pageUrl = `${bookFolderPath}/${pageNum}.pdf`;
+            const response = await fetch(pageUrl, { method: 'GET' });
+            if (!response.ok) {
+                bookHasMore = false;
+                return null;
+            }
+
+            bookPages[pageNum - 1] = pageUrl;
+            const buffer = await response.arrayBuffer();
+            bookPageBuffers[pageNum - 1] = buffer;
+            totalPages = Math.max(totalPages, pageNum);
+            return buffer;
+        }
+
+        async function resolveBookTotalPages() {
+            let low = 0;
+            let high = 1;
+
+            while (await pageExists(high)) {
+                low = high;
+                high *= 2;
+            }
+
+            while (low + 1 < high) {
+                const mid = Math.floor((low + high) / 2);
+                if (await pageExists(mid)) {
+                    low = mid;
+                } else {
+                    high = mid;
+                }
+            }
+
+            return low;
+        }
+
+        async function pageExists(pageNum) {
+            const pageUrl = `${bookFolderPath}/${pageNum}.pdf`;
+            const response = await fetch(pageUrl, { method: 'HEAD', cache: 'no-store' });
+            return response.ok;
+        }
+
+        async function renderPdfBuffer(arrayBuffer, position) {
+            const doc = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
             const page = await doc.getPage(1);
             const viewport = page.getViewport({ scale });
 
@@ -762,7 +817,7 @@
                     if (currentPage < 2) currentPage = 2;
                 }
                 if (bookMode) {
-                    renderBookPages(bookPages);
+                    renderBookPages();
                 } else {
                     renderPages();
                 }
@@ -772,17 +827,21 @@
         }
 
         function showNextPage() {
-            if (currentPage < totalPages) {
+            const canAdvance = bookMode ? (bookHasMore || !bookTotalPagesResolved) : currentPage < totalPages;
+            if (canAdvance) {
                 if (currentPage === 1) {
                     // Go from single first page to dual pages starting at page 2
                     currentPage = 2;
                 } else {
                     // Normal dual page navigation
                     currentPage += 2;
-                    if (currentPage > totalPages) currentPage = totalPages - 1;
+                    if (bookMode && totalPages && currentPage > totalPages) {
+                        currentPage = totalPages;
+                    }
+                    if (!bookMode && currentPage > totalPages) currentPage = totalPages - 1;
                 }
                 if (bookMode) {
-                    renderBookPages(bookPages);
+                    renderBookPages();
                 } else {
                     renderPages();
                 }
@@ -810,12 +869,15 @@
         function updatePageInfo() {
             if (pdfDoc || bookMode) {
                 if (currentPage === 1) {
-                    pageInfo.textContent = `Page 1 of ${totalPages}`;
+                    pageInfo.textContent = bookMode && !totalPages ? `Page 1` : `Page 1 of ${totalPages}`;
                 } else {
-                    const rightPage = Math.min(currentPage + 1, totalPages);
-                    const displayText = currentPage === rightPage ?
-                        `Page ${currentPage} of ${totalPages}` :
-                        `Pages ${currentPage}-${rightPage} of ${totalPages}`;
+                    const safeCurrentPage = totalPages ? Math.min(currentPage, totalPages) : currentPage;
+                    const rightPage = totalPages ? Math.min(safeCurrentPage + 1, totalPages) : safeCurrentPage + 1;
+                    const displayText = totalPages
+                        ? (safeCurrentPage === rightPage ?
+                            `Page ${safeCurrentPage} of ${totalPages}` :
+                            `Pages ${safeCurrentPage}-${rightPage} of ${totalPages}`)
+                        : `Pages ${safeCurrentPage}-${rightPage}`;
                     pageInfo.textContent = displayText;
                 }
             } else {
@@ -826,12 +888,22 @@
         function updateNavigationButtons() {
             const hasDocument = pdfDoc || bookMode;
             prevBtn.disabled = !hasDocument || currentPage <= 1;
-            nextBtn.disabled = !hasDocument || currentPage >= totalPages;
+            nextBtn.disabled = !hasDocument || (!bookMode && currentPage >= totalPages) || (bookMode && bookTotalPagesResolved && currentPage >= totalPages);
+        }
+
+        function clampBookPageToTotal() {
+            if (!bookMode || !totalPages) return;
+            if (currentPage > totalPages) {
+                currentPage = totalPages === 1 ? 1 : (totalPages % 2 === 0 ? totalPages - 1 : totalPages);
+            }
+            if (currentPage < 1) {
+                currentPage = 1;
+            }
         }
 
         function rerenderCurrentView() {
             if (bookMode) {
-                renderBookPages(bookPages);
+                renderBookPages();
             } else if (pdfDoc) {
                 renderPages();
             }
