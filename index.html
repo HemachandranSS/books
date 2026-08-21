@@ -166,80 +166,43 @@
         <section class="hero">
             <div>
                 <h1>Books</h1>
-                <p class="lede">Pick a book folder to open its numbered PDF pages in the viewer. The viewer expects files like `1.pdf`, `2.pdf`, continuing through the last page in that folder.</p>
+                <!-- <p class="lede">Pick a book folder to open its numbered PDF pages in the viewer. The viewer expects files like `1.pdf`, `2.pdf`, continuing through the last page in that folder.</p> -->
             </div>
             <div id="count" class="count"></div>
         </section>
-
-        <!-- <section class="section">
-            <div class="section-head">
-                <h2 class="section-title">Books</h2>
-                <div id="booksCount" class="section-note"></div>
-            </div>
-            <section id="grid" class="grid"></section>
-        </section> -->
 
         <section class="section">
             <div class="section-head">
                 <h2 class="section-title">Visual Books</h2>
                 <div id="visualCount" class="section-note"></div>
             </div>
-            <section id="visualGrid" class="grid"></section>
+            <section id="visualGrid" class="grid">
+                <a class="card" href="dual_pdf_viewer.html?book=books/visual-books/Scientists_-_Dorling_Kindersley">
+                    <h2 class="card-title">Scientists Dorling Kindersley</h2>
+                    <div class="card-meta">Open numbered PDFs from <strong>visual-books/Scientists_-_Dorling_Kindersley/</strong> as a visual book</div>
+                </a>
+                <a class="card" href="dual_pdf_viewer.html?book=books/visual-books/baby_play_for_every_day">
+                    <h2 class="card-title">Baby Play For Every Day</h2>
+                    <div class="card-meta">Open numbered PDFs from <strong>visual-books/baby_play_for_every_day/</strong> as a visual book</div>
+                </a>
+            </section>
         </section>
 
-        <div id="empty" class="empty" style="display:none;">No book folders were found in this directory.</div>
+        <div class="empty" style="display:none;">No visual book folders were found in `visual-books/`.</div>
         <div class="footer">Click any book to open it in the dual-page viewer.</div>
     </main>
 
     <script>
-        const books = [
-            'baby_play_for_every_day'
-        ];
         const visualBooks = [
             'visual-books/Scientists_-_Dorling_Kindersley',
             'visual-books/baby_play_for_every_day'
         ];
 
-        const grid = document.getElementById('grid');
-        const visualGrid = document.getElementById('visualGrid');
-        const empty = document.getElementById('empty');
-        const count = document.getElementById('count');
-        const booksCount = document.getElementById('booksCount');
-        const visualCount = document.getElementById('visualCount');
+        const bookCount = visualBooks.length;
+        const label = bookCount === 1 ? 'Book' : 'Books';
 
-        count.textContent = `${books.length + visualBooks.length} folder${books.length + visualBooks.length === 1 ? '' : 's'}`;
-        booksCount.textContent = `${books.length} folder${books.length === 1 ? '' : 's'}`;
-        visualCount.textContent = `${visualBooks.length} folder${visualBooks.length === 1 ? '' : 's'}`;
-
-        if (!books.length && !visualBooks.length) {
-            empty.style.display = 'block';
-        } else {
-            grid.innerHTML = books.map((book) => {
-                const title = titleize(book);
-                return `
-                    <a class="card" href="dual_pdf_viewer.html?book=${encodeURIComponent(`books/${book}`)}">
-                        <h2 class="card-title">${title}</h2>
-                        <div class="card-meta">Open numbered PDFs from <strong>${book}/</strong> as a book</div>
-                    </a>
-                `;
-            }).join('');
-
-            visualGrid.innerHTML = visualBooks.map((book) => {
-                const title = titleize(book.split('/').pop());
-                return `
-                    <a class="card" href="dual_pdf_viewer.html?book=${encodeURIComponent(`books/${book}`)}">
-                        <h2 class="card-title">${title}</h2>
-                        <div class="card-meta">Open numbered PDFs from <strong>${book}/</strong> as a visual book</div>
-                    </a>
-                `;
-            }).join('');
-        }
-
-        function titleize(value) {
-            return value
-                .replace(/[_-]+/g, ' ')
-                .replace(/\b\w/g, (ch) => ch.toUpperCase());
-        }
+        document.getElementById('count').textContent = `${bookCount} ${label}`;
+        document.getElementById('visualCount').textContent = `${bookCount} ${label}`;
     </script>
 </body>
 
