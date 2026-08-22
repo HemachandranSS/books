@@ -267,6 +267,10 @@
             width: max-content;
         }
 
+        .pages-container.dual-page-container .page-wrapper + .page-wrapper {
+            margin-left: -1px;
+        }
+
         .single-page {
             margin: 0 auto;
         }
@@ -277,6 +281,11 @@
             transition: all 0.3s ease;
             flex-shrink: 0;
             transform-origin: center center;
+            margin: 0;
+            padding: 0;
+            border: 0;
+            line-height: 0;
+            font-size: 0;
         }
 
         .page-wrapper:hover {
@@ -286,6 +295,7 @@
 
         .page-canvas {
             display: block;
+            margin: 0;
         }
 
         .welcome-message {
@@ -570,7 +580,14 @@
 
             try {
                 const arrayBuffer = await file.arrayBuffer();
-                pdfDoc = await pdfjsLib.getDocument(arrayBuffer).promise;
+                pdfDoc = await pdfjsLib.getDocument({
+                    data: new Uint8Array(arrayBuffer),
+                    stopAtErrors: false,
+                    isOffscreenCanvasSupported: false,
+                    isImageDecoderSupported: false,
+                    isEvalSupported: false,
+                    useWorkerFetch: false
+                }).promise;
                 bookMode = false;
                 bookPages = [];
                 hasZoomed = false;
@@ -596,7 +613,14 @@
                     throw new Error(`Failed to load ${url}`);
                 }
                 const arrayBuffer = await response.arrayBuffer();
-                pdfDoc = await pdfjsLib.getDocument(arrayBuffer).promise;
+                pdfDoc = await pdfjsLib.getDocument({
+                    data: new Uint8Array(arrayBuffer),
+                    stopAtErrors: false,
+                    isOffscreenCanvasSupported: false,
+                    isImageDecoderSupported: false,
+                    isEvalSupported: false,
+                    useWorkerFetch: false
+                }).promise;
                 bookMode = false;
                 bookPages = [];
                 hasZoomed = false;
@@ -670,6 +694,7 @@
             mainContent.classList.toggle('zoomed-state', hasZoomed);
             const nextContainer = document.createElement('div');
             nextContainer.className = 'pages-container';
+            nextContainer.classList.add(currentPage === 1 ? 'single-page-container' : 'dual-page-container');
 
             // First page is always single (cover page)
             if (currentPage === 1) {
@@ -694,6 +719,7 @@
             mainContent.classList.toggle('zoomed-state', hasZoomed);
             const nextContainer = document.createElement('div');
             nextContainer.className = 'pages-container';
+            nextContainer.classList.add(currentPage === 1 ? 'single-page-container' : 'dual-page-container');
 
             if (currentPage === 1) {
                 await renderBookPage(1, 'single', nextContainer);
@@ -735,24 +761,11 @@
         }
 
         async function resolveBookTotalPages() {
-            let low = 0;
-            let high = 1;
-
-            while (await pageExists(high)) {
-                low = high;
-                high *= 2;
+            let pageNum = 1;
+            while (await pageExists(pageNum)) {
+                pageNum += 1;
             }
-
-            while (low + 1 < high) {
-                const mid = Math.floor((low + high) / 2);
-                if (await pageExists(mid)) {
-                    low = mid;
-                } else {
-                    high = mid;
-                }
-            }
-
-            return low;
+            return pageNum - 1;
         }
 
         async function pageExists(pageNum) {
@@ -762,23 +775,37 @@
         }
 
         async function renderPdfBuffer(arrayBuffer, position, targetContainer) {
-            const data = arrayBuffer instanceof Uint8Array ? new Uint8Array(arrayBuffer) : new Uint8Array(arrayBuffer);
-            const doc = await pdfjsLib.getDocument({ data }).promise;
-            const page = await doc.getPage(1);
-            const viewport = page.getViewport({ scale });
+            try {
+                const data = arrayBuffer instanceof Uint8Array ? new Uint8Array(arrayBuffer) : new Uint8Array(arrayBuffer);
+                const doc = await pdfjsLib.getDocument({
+                    data,
+                    stopAtErrors: false,
+                    isOffscreenCanvasSupported: false,
+                    isImageDecoderSupported: false,
+                    isEvalSupported: false,
+                    useWorkerFetch: false
+                }).promise;
+                const page = await doc.getPage(1);
+                const viewport = page.getViewport({ scale });
 
-            const canvas = document.createElement('canvas');
-            const context = canvas.getContext('2d');
-            canvas.height = viewport.height;
-            canvas.width = viewport.width;
-            canvas.className = 'page-canvas';
+                const canvas = document.createElement('canvas');
+                const context = canvas.getContext('2d');
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+                canvas.className = 'page-canvas';
 
-            const wrapper = document.createElement('div');
-            wrapper.className = `page-wrapper ${position === 'single' ? 'single-page' : ''}`;
-            wrapper.appendChild(canvas);
-            (targetContainer || pagesContainer).appendChild(wrapper);
+                const wrapper = document.createElement('div');
+                wrapper.className = `page-wrapper ${position === 'single' ? 'single-page' : ''}`;
+                wrapper.appendChild(canvas);
+                (targetContainer || pagesContainer).appendChild(wrapper);
 
-            await page.render({ canvasContext: context, viewport }).promise;
+                await page.render({ canvasContext: context, viewport }).promise;
+                await page.cleanup();
+                doc.cleanup();
+                doc.destroy();
+            } catch (error) {
+                console.error('Error rendering book page:', error);
+            }
         }
 
         async function renderPage(pageNum, position, targetContainer) {
@@ -836,7 +863,7 @@
         }
 
         function showNextPage() {
-            const canAdvance = bookMode ? (bookHasMore || !bookTotalPagesResolved) : currentPage < totalPages;
+            const canAdvance = bookMode ? (totalPages === 0 || currentPage < totalPages) : currentPage < totalPages;
             if (canAdvance) {
                 if (currentPage === 1) {
                     // Go from single first page to dual pages starting at page 2
@@ -897,7 +924,7 @@
         function updateNavigationButtons() {
             const hasDocument = pdfDoc || bookMode;
             prevBtn.disabled = !hasDocument || currentPage <= 1;
-            nextBtn.disabled = !hasDocument || (!bookMode && currentPage >= totalPages) || (bookMode && bookTotalPagesResolved && currentPage >= totalPages);
+            nextBtn.disabled = !hasDocument || (!bookMode && currentPage >= totalPages) || (bookMode && totalPages > 0 && currentPage >= totalPages);
         }
 
         function clampBookPageToTotal() {
