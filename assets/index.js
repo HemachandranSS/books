@@ -21,7 +21,8 @@ const visualBooks = [
     'books/visual-books/life_cycles_everything_from_start_to_finish',
     'books/visual-books/dk_children_s_illustrated_animal_atlas',
     'books/visual-books/the_animal_atlas',
-    'books/visual-books/the_bird_atlas'
+    'books/visual-books/the_bird_atlas',
+    'books/visual-books/the_most_fantastic_atlas'
 ];
 
 const bookCount = visualBooks.length;
