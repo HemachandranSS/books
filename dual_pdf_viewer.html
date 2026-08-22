@@ -653,18 +653,7 @@
                 hideLoading();
                 subtitle.textContent = `${titleize(normalizedFolder)} · loading pages on demand`;
                 pageInfo.textContent = `Page 1`;
-                resolveBookTotalPages().then((count) => {
-                    if (typeof count === 'number' && count > 0) {
-                        totalPages = count;
-                        bookHasMore = currentPage < totalPages;
-                        bookTotalPagesResolved = true;
-                        clampBookPageToTotal();
-                        updatePageInfo();
-                        updateNavigationButtons();
-                    }
-                }).catch((error) => {
-                    console.warn('Could not resolve book total pages:', error);
-                });
+                countBookPagesInBackground();
                 renderBookPages();
                 updateNavigationButtons();
             } catch (error) {
@@ -728,6 +717,7 @@
                 await renderBookPage(currentPage + 1, 'right', nextContainer);
             }
             swapPagesContainer(nextContainer);
+            prefetchNextBookSpread();
             settleViewportAfterRender();
         }
 
@@ -760,18 +750,49 @@
             return buffer;
         }
 
-        async function resolveBookTotalPages() {
+        function countBookPagesInBackground() {
+            const encodedFolder = normalizeBookFolder(bookFolderPath);
             let pageNum = 1;
-            while (await pageExists(pageNum)) {
-                pageNum += 1;
-            }
-            return pageNum - 1;
+
+            const probeNext = () => {
+                if (!bookMode || encodedFolder !== normalizeBookFolder(bookFolderPath)) return;
+
+                const pageUrl = `${encodedFolder}/${pageNum}.pdf`;
+                fetch(pageUrl, { method: 'HEAD', cache: 'no-store' })
+                    .then((response) => {
+                        if (!response.ok) {
+                            totalPages = pageNum - 1;
+                            bookTotalPagesResolved = true;
+                            updatePageInfo();
+                            updateNavigationButtons();
+                            return;
+                        }
+
+                        pageNum += 1;
+                        probeNext();
+                    })
+                    .catch(() => {
+                        totalPages = Math.max(totalPages, pageNum - 1);
+                        bookTotalPagesResolved = true;
+                        updatePageInfo();
+                        updateNavigationButtons();
+                    });
+            };
+
+            setTimeout(probeNext, 0);
         }
 
-        async function pageExists(pageNum) {
-            const pageUrl = `${normalizeBookFolder(bookFolderPath)}/${pageNum}.pdf`;
-            const response = await fetch(pageUrl, { method: 'HEAD', cache: 'no-store' });
-            return response.ok;
+        function prefetchNextBookSpread() {
+            if (!bookMode || !bookHasMore) return;
+
+            const nextPage = currentPage === 1 ? 2 : currentPage + 2;
+            if (nextPage <= 0 || bookPageBuffers[nextPage - 1]) return;
+
+            setTimeout(() => {
+                getBookPageBuffer(nextPage).catch((error) => {
+                    console.warn('Prefetch failed:', error);
+                });
+            }, 0);
         }
 
         async function renderPdfBuffer(arrayBuffer, position, targetContainer) {
@@ -863,7 +884,7 @@
         }
 
         function showNextPage() {
-            const canAdvance = bookMode ? (totalPages === 0 || currentPage < totalPages) : currentPage < totalPages;
+            const canAdvance = bookMode ? (currentPage === 1 || bookHasMore || currentPage + 1 < bookPages.length) : currentPage < totalPages;
             if (canAdvance) {
                 if (currentPage === 1) {
                     // Go from single first page to dual pages starting at page 2
@@ -871,9 +892,6 @@
                 } else {
                     // Normal dual page navigation
                     currentPage += 2;
-                    if (bookMode && totalPages && currentPage > totalPages) {
-                        currentPage = totalPages;
-                    }
                     if (!bookMode && currentPage > totalPages) currentPage = totalPages - 1;
                 }
                 if (bookMode) {
@@ -924,7 +942,7 @@
         function updateNavigationButtons() {
             const hasDocument = pdfDoc || bookMode;
             prevBtn.disabled = !hasDocument || currentPage <= 1;
-            nextBtn.disabled = !hasDocument || (!bookMode && currentPage >= totalPages) || (bookMode && totalPages > 0 && currentPage >= totalPages);
+            nextBtn.disabled = !hasDocument || (!bookMode && currentPage >= totalPages) || (bookMode && !(currentPage === 1 || bookHasMore || currentPage + 1 < bookPages.length));
         }
 
         function clampBookPageToTotal() {
