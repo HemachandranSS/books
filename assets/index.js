@@ -28,7 +28,8 @@ const visualBooks = [
     'books/visual-books/weather_and_the_seasons',
     'books/visual-books/woodfores',
     'books/visual-books/life_as_we_know_it',
-    'books/visual-books/mills_a_dkfindout_oceans'
+    'books/visual-books/mills_a_dkfindout_oceans',
+    'books/visual-books/365_things_to_do_with_paper'
 ];
 
 const bookCount = visualBooks.length;
