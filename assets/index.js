@@ -18,7 +18,8 @@ const visualBooks = [
     'books/visual-books/me_and_my_body',
     'books/visual-books/great_things_to_do_outside',
     'books/visual-books/my_encyclopedia_of_very_important_animals',
-    'books/visual-books/life_cycles_everything_from_start_to_finish'
+    'books/visual-books/life_cycles_everything_from_start_to_finish',
+    'books/visual-books/dk_children_s_illustrated_animal_atlas'
 ];
 
 const bookCount = visualBooks.length;
