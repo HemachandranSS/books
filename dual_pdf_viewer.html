@@ -213,6 +213,10 @@
             transform: scale(1.05);
         }
 
+        .zoom-btn:active {
+            transform: scale(0.96);
+        }
+
         .main-content {
             position: fixed;
             top: 0;
@@ -228,6 +232,7 @@
             height: 100vh;
             align-items: center;
             justify-content: center;
+            touch-action: pan-x pan-y;
         }
 
         .main-content.loading-state {
@@ -265,6 +270,7 @@
             align-items: flex-start;
             min-width: max-content;
             width: max-content;
+            flex-wrap: nowrap;
         }
 
         .pages-container.dual-page-container .page-wrapper + .page-wrapper {
@@ -352,11 +358,6 @@
         }
 
         @media (max-width: 768px) {
-            .pages-container {
-                flex-direction: column;
-                gap: 1rem;
-            }
-
             .header {
                 padding: 0.85rem 0.85rem 0.95rem;
                 align-items: stretch;
@@ -379,6 +380,7 @@
 
             .nav-btn {
                 flex: 1;
+                min-height: 2.7rem;
             }
 
             .page-info {
@@ -386,12 +388,18 @@
                 min-width: 0;
             }
 
+            .zoom-btn {
+                width: 2.55rem;
+                height: 2.55rem;
+                min-height: 2.55rem;
+            }
+
             .main-content {
-                padding: 1rem;
+                padding: 0.75rem;
             }
 
             .viewer-container {
-                padding: 1rem;
+                padding: 0.85rem;
             }
 
             .top-reveal-zone {
@@ -489,6 +497,73 @@
         nextBtn.addEventListener('click', showNextPage);
         zoomInBtn.addEventListener('click', zoomIn);
         zoomOutBtn.addEventListener('click', zoomOut);
+
+        let activePinchDistance = null;
+        let activePinchCenter = null;
+
+        const getTouchDistance = (touchA, touchB) => Math.hypot(touchA.clientX - touchB.clientX, touchA.clientY - touchB.clientY);
+
+        const getTouchCenter = (touchA, touchB) => ({
+            x: (touchA.clientX + touchB.clientX) / 2,
+            y: (touchA.clientY + touchB.clientY) / 2
+        });
+
+        const beginPinch = (touches) => {
+            if (touches.length < 2) return;
+            activePinchDistance = getTouchDistance(touches[0], touches[1]);
+            activePinchCenter = getTouchCenter(touches[0], touches[1]);
+            zoomAnchor = {
+                x: mainContent.scrollLeft + activePinchCenter.x,
+                y: mainContent.scrollTop + activePinchCenter.y
+            };
+        };
+
+        const updatePinch = (touches) => {
+            if (touches.length < 2 || !activePinchDistance) return;
+            const nextDistance = getTouchDistance(touches[0], touches[1]);
+            const delta = nextDistance - activePinchDistance;
+
+            if (Math.abs(delta) < 12) return;
+
+            if (delta > 0) {
+                zoomIn(true);
+            } else {
+                zoomOut(true);
+            }
+
+            activePinchDistance = nextDistance;
+            activePinchCenter = getTouchCenter(touches[0], touches[1]);
+            zoomAnchor = {
+                x: mainContent.scrollLeft + activePinchCenter.x,
+                y: mainContent.scrollTop + activePinchCenter.y
+            };
+        };
+
+        const endPinch = () => {
+            activePinchDistance = null;
+            activePinchCenter = null;
+        };
+
+        mainContent.addEventListener('touchstart', (event) => {
+            if (event.touches.length === 2) {
+                beginPinch(event.touches);
+            }
+        }, { passive: true });
+
+        mainContent.addEventListener('touchmove', (event) => {
+            if (event.touches.length === 2) {
+                event.preventDefault();
+                updatePinch(event.touches);
+            }
+        }, { passive: false });
+
+        mainContent.addEventListener('touchend', (event) => {
+            if (event.touches.length < 2) {
+                endPinch();
+            }
+        }, { passive: true });
+
+        mainContent.addEventListener('touchcancel', endPinch, { passive: true });
 
         const activateHeader = () => {
             header.classList.remove('is-hidden');
@@ -904,16 +979,20 @@
             }
         }
 
-        function zoomIn() {
-            captureZoomAnchor();
+        function zoomIn(preserveAnchor = false) {
+            if (!preserveAnchor) {
+                captureZoomAnchor();
+            }
             scale = Math.min(scale * 1.2, 3);
             hasZoomed = true;
             mainContent.classList.add('zoomed-state');
             rerenderCurrentView();
         }
 
-        function zoomOut() {
-            captureZoomAnchor();
+        function zoomOut(preserveAnchor = false) {
+            if (!preserveAnchor) {
+                captureZoomAnchor();
+            }
             scale = Math.max(scale / 1.2, 0.5);
             hasZoomed = true;
             mainContent.classList.add('zoomed-state');
