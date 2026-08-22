@@ -25,7 +25,8 @@ const visualBooks = [
     'books/visual-books/the_most_fantastic_atlas',
     'books/visual-books/dk_children_s_illustrated_history_atlas',
     'books/visual-books/science_squad',
-    'books/visual-books/weather_and_the_seasons'
+    'books/visual-books/weather_and_the_seasons',
+    'books/visual-books/woodfores'
 ];
 
 const bookCount = visualBooks.length;
