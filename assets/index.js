@@ -1,0 +1,28 @@
+const visualBooks = [
+    'books/visual-books/baby_play_for_every_day',
+    'books/visual-books/Scientists_-_Dorling_Kindersley',
+    'books/visual-books/jack_maker_lab_28_super_cool_projects_build_invent',
+    'books/visual-books/first_children_s_encyclopedia',
+    'books/visual-books/100_people_who_made_history',
+    'books/visual-books/children_first_childrens_dictionary',
+    'books/visual-books/Night_sky_Explore_nature',
+    'books/visual-books/my_encyclopedia_of_very_important_sports',
+    'books/visual-books/1000_words_nature',
+    'books/visual-books/did_you_know_amazing_answer_to_the_questions',
+    'books/visual-books/dk_children_big_questions',
+    'books/visual-books/cars_trains_ships_and_planes',
+    'books/visual-books/Christopher_Brickell_-_Encyclopedia_of_Plants_and_Flowers-DK_Publishing_2019',
+    'books/visual-books/the_steam_team_explains_more_than_10',
+    'books/visual-books/our_world_in_pictures_countries_cultures_people',
+    'books/visual-books/dk_my_top_to_bottom_body_book',
+    'books/visual-books/me_and_my_body',
+    'books/visual-books/great_things_to_do_outside',
+    'books/visual-books/my_encyclopedia_of_very_important_animals',
+    'books/visual-books/life_cycles_everything_from_start_to_finish'
+];
+
+const bookCount = visualBooks.length;
+const label = bookCount === 1 ? 'Book' : 'Books';
+
+document.getElementById('count').textContent = `${bookCount} ${label}`;
+document.getElementById('visualCount').textContent = `${bookCount} ${label}`;
