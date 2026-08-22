@@ -23,7 +23,8 @@ const visualBooks = [
     'books/visual-books/the_animal_atlas',
     'books/visual-books/the_bird_atlas',
     'books/visual-books/the_most_fantastic_atlas',
-    'books/visual-books/dk_children_s_illustrated_history_atlas'
+    'books/visual-books/dk_children_s_illustrated_history_atlas',
+    'books/visual-books/science_squad'
 ];
 
 const bookCount = visualBooks.length;
