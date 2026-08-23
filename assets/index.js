@@ -60,7 +60,10 @@ const visualBooks = [
     'books/visual-books/Help_Your_Kids_with_Language_Arts',
     'books/visual-books/Help_Your_Kids_with_Music',
     'books/visual-books/Help_Your_Kids_with_Computer',
-    'books/visual-books/Help_Your_Kids_with_Adolescence'
+    'books/visual-books/Help_Your_Kids_with_Adolescence',
+    'books/visual-books/dk_eyewitness_books_ocean',
+    'books/visual-books/dk_google_online_oceans',
+    'books/visual-books/dk_smithsonian_ocean'
 ];
 
 const bookCount = visualBooks.length;
