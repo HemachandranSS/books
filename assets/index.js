@@ -83,7 +83,8 @@ const visualBooks = [
     'books/visual-books/Starfinder_The_Complete_Beginners_Guide_to_Exploring_the_Night_Sky_by_Carole_Stott',
     'books/visual-books/Universe_Third_Edition_by_DK',
     'books/visual-books/Simply_Quantum_Physics_Miezan_van_Zyl_Project_Editor',
-    'books/visual-books/Quantum-Physics'
+    'books/visual-books/Quantum-Physics',
+    'books/visual-books/How_Money_Works_-_The_Facts_Visually_Explained_2017'
 ];
 
 const bookCount = visualBooks.length;
