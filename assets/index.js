@@ -90,7 +90,9 @@ const visualBooks = [
     'books/visual-books/How_to_Start_Your_Own_Business_The_Facts_Visually_Explained_DK',
     'books/visual-books/The_Law_Book_by_DK',
     'books/visual-books/Glynis_Barnes-Mellish_-_Watercolor_Workshop_-_2006',
-    'books/visual-books/An_Introduction_to_Oil_Painting_DK_Art_School'
+    'books/visual-books/An_Introduction_to_Oil_Painting_DK_Art_School',
+    'books/visual-books/Norse_Myths',
+    'books/visual-books/A_History_of_Magic_Witchcraft_and_the_Occult_-_DK'
 ];
 
 const bookCount = visualBooks.length;
