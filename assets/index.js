@@ -81,7 +81,8 @@ const visualBooks = [
     'books/visual-books/The_Mysteries_of_the_Universe_Discover_the_best-kept_secrets_of_space_by_Will_Gater_z-lib_org',
     'books/visual-books/The_Stars_The_Definitive_Visual_Guide_to_the_Cosmos',
     'books/visual-books/Starfinder_The_Complete_Beginners_Guide_to_Exploring_the_Night_Sky_by_Carole_Stott',
-    'books/visual-books/Universe_Third_Edition_by_DK'
+    'books/visual-books/Universe_Third_Edition_by_DK',
+    'books/visual-books/Simply_Quantum_Physics_Miezan_van_Zyl_Project_Editor'
 ];
 
 const bookCount = visualBooks.length;
