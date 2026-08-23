@@ -82,7 +82,8 @@ const visualBooks = [
     'books/visual-books/The_Stars_The_Definitive_Visual_Guide_to_the_Cosmos',
     'books/visual-books/Starfinder_The_Complete_Beginners_Guide_to_Exploring_the_Night_Sky_by_Carole_Stott',
     'books/visual-books/Universe_Third_Edition_by_DK',
-    'books/visual-books/Simply_Quantum_Physics_Miezan_van_Zyl_Project_Editor'
+    'books/visual-books/Simply_Quantum_Physics_Miezan_van_Zyl_Project_Editor',
+    'books/visual-books/Quantum-Physics'
 ];
 
 const bookCount = visualBooks.length;
