@@ -64,7 +64,8 @@ const visualBooks = [
     'books/visual-books/dk_eyewitness_books_ocean',
     'books/visual-books/dk_google_online_oceans',
     'books/visual-books/dk_smithsonian_ocean',
-    'books/visual-books/Ann_Swanson_Science_of_Yoga_Understand_the_Anat'
+    'books/visual-books/Ann_Swanson_Science_of_Yoga_Understand_the_Anat',
+    'books/visual-books/DK_-_1000_Words_-_Science'
 ];
 
 const bookCount = visualBooks.length;
