@@ -34,7 +34,8 @@ const visualBooks = [
     'books/visual-books/the_crafter_s_year',
     'books/visual-books/dk_children_lets_sew',
     'books/visual-books/cooking_step_by_step',
-    'books/visual-books/my_first_vegetarian_cookbook'
+    'books/visual-books/my_first_vegetarian_cookbook',
+    'books/visual-books/gladiators_riveting_reads'
 ];
 
 const bookCount = visualBooks.length;
