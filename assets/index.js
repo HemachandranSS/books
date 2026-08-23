@@ -35,7 +35,8 @@ const visualBooks = [
     'books/visual-books/dk_children_lets_sew',
     'books/visual-books/cooking_step_by_step',
     'books/visual-books/my_first_vegetarian_cookbook',
-    'books/visual-books/gladiators_riveting_reads'
+    'books/visual-books/gladiators_riveting_reads',
+    'books/visual-books/macfarlane_t_dragon_world'
 ];
 
 const bookCount = visualBooks.length;
