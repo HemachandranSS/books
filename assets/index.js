@@ -32,7 +32,8 @@ const visualBooks = [
     'books/visual-books/365_things_to_do_with_paper',
     'books/visual-books/domoney_d_my_house_plant_changed_my_life',
     'books/visual-books/the_crafter_s_year',
-    'books/visual-books/dk_children_lets_sew'
+    'books/visual-books/dk_children_lets_sew',
+    'books/visual-books/cooking_step_by_step'
 ];
 
 const bookCount = visualBooks.length;
