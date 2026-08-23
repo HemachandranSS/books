@@ -67,7 +67,8 @@ const visualBooks = [
     'books/visual-books/Ann_Swanson_Science_of_Yoga_Understand_the_Anat',
     'books/visual-books/DK_-_1000_Words_-_Science',
     'books/visual-books/Where_on_Earth_-_Dorling_Kindersley',
-    'books/DK_-_Big_Book_of_Knowledge'
+    'books/DK_-_Big_Book_of_Knowledge',
+    'books/visual-books/Natural_Wonders_of_the_World_By_DK'
 ];
 
 const bookCount = visualBooks.length;
