@@ -59,7 +59,8 @@ const visualBooks = [
     'books/visual-books/Kniga_Help_Your_Kids_with_Computer_Coding',
     'books/visual-books/Help_Your_Kids_with_Language_Arts',
     'books/visual-books/Help_Your_Kids_with_Music',
-    'books/visual-books/Help_Your_Kids_with_Computer'
+    'books/visual-books/Help_Your_Kids_with_Computer',
+    'books/visual-books/Help_Your_Kids_with_Adolescence'
 ];
 
 const bookCount = visualBooks.length;
