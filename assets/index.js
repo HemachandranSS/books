@@ -63,7 +63,8 @@ const visualBooks = [
     'books/visual-books/Help_Your_Kids_with_Adolescence',
     'books/visual-books/dk_eyewitness_books_ocean',
     'books/visual-books/dk_google_online_oceans',
-    'books/visual-books/dk_smithsonian_ocean'
+    'books/visual-books/dk_smithsonian_ocean',
+    'books/visual-books/Ann_Swanson_Science_of_Yoga_Understand_the_Anat'
 ];
 
 const bookCount = visualBooks.length;
