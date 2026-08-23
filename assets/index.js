@@ -78,7 +78,9 @@ const visualBooks = [
     'books/visual-books/dk_first_space_encyclopedia',
     'books/visual-books/dk_see_how_they_go_spaceship',
     'books/visual-books/dk_space_visual_encyclopedia',
-    'books/visual-books/The_Mysteries_of_the_Universe_Discover_the_best-kept_secrets_of_space_by_Will_Gater_z-lib_org'
+    'books/visual-books/The_Mysteries_of_the_Universe_Discover_the_best-kept_secrets_of_space_by_Will_Gater_z-lib_org',
+    'books/visual-books/The_Stars_The_Definitive_Visual_Guide_to_the_Cosmos',
+    'books/visual-books/Starfinder_The_Complete_Beginners_Guide_to_Exploring_the_Night_Sky_by_Carole_Stott'
 ];
 
 const bookCount = visualBooks.length;
