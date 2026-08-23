@@ -72,7 +72,9 @@ const visualBooks = [
     'books/visual-books/Plant_DK_Eye_Wonder_by_Fleur_Star',
     'books/visual-books/Christopher_Brickell_-_Encyclopedia_of_Plants_and_Flowers-DK_Publishing_2019',
     'books/visual-books/Scientists_Who_Changed_History',
-    'books/visual-books/Geography_of_the_World_By_DK'
+    'books/visual-books/Geography_of_the_World_By_DK',
+    'books/visual-books/DK_-_Wonders_of_Nature_Ben_Hoare',
+    'books/visual-books/Super_Science_Encyclopedia_How_Science_Shapes_Our_World_by_Dorling_Kindersley'
 ];
 
 const bookCount = visualBooks.length;
