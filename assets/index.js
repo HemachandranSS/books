@@ -74,7 +74,8 @@ const visualBooks = [
     'books/visual-books/Scientists_Who_Changed_History',
     'books/visual-books/Geography_of_the_World_By_DK',
     'books/visual-books/DK_-_Wonders_of_Nature_Ben_Hoare',
-    'books/visual-books/Super_Science_Encyclopedia_How_Science_Shapes_Our_World_by_Dorling_Kindersley'
+    'books/visual-books/Super_Science_Encyclopedia_How_Science_Shapes_Our_World_by_Dorling_Kindersley',
+    'books/visual-books/dk_first_space_encyclopedia'
 ];
 
 const bookCount = visualBooks.length;
