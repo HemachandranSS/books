@@ -11,7 +11,7 @@ const visualBooks = [
     'books/visual-books/did_you_know_amazing_answer_to_the_questions',
     'books/visual-books/dk_children_big_questions',
     'books/visual-books/cars_trains_ships_and_planes',
-    'books/visual-books/Christopher_Brickell_-_Encyclopedia_of_Plants_and_Flowers-DK_Publishing_2019',
+    'books/visual-books/picture-encyclopedia',
     'books/visual-books/the_steam_team_explains_more_than_10',
     'books/visual-books/our_world_in_pictures_countries_cultures_people',
     'books/visual-books/dk_my_top_to_bottom_body_book',
@@ -69,7 +69,8 @@ const visualBooks = [
     'books/visual-books/Where_on_Earth_-_Dorling_Kindersley',
     'books/DK_-_Big_Book_of_Knowledge',
     'books/visual-books/Natural_Wonders_of_the_World_By_DK',
-    'books/visual-books/Plant_DK_Eye_Wonder_by_Fleur_Star'
+    'books/visual-books/Plant_DK_Eye_Wonder_by_Fleur_Star',
+    'books/visual-books/Christopher_Brickell_-_Encyclopedia_of_Plants_and_Flowers-DK_Publishing_2019'
 ];
 
 const bookCount = visualBooks.length;
