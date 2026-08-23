@@ -97,7 +97,8 @@ const visualBooks = [
     'books/visual-books/Animal_-_David_Burnie',
     'books/visual-books/Computer_Coding_Python_Projects_for_Kids_-_Carol_Vorderman',
     'books/visual-books/Encyclopedia_of_Garden_Plants_for_Every_Location_-_DK',
-    'books/visual-books/Encyclopedia_Of_Herbal_Medicine_-_Andrew_Chevallier'
+    'books/visual-books/Encyclopedia_Of_Herbal_Medicine_-_Andrew_Chevallier',
+    'books/visual-books/First_Animal_Encyclopedia_-_DK'
 ];
 
 const bookCount = visualBooks.length;
