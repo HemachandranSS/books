@@ -92,7 +92,8 @@ const visualBooks = [
     'books/visual-books/Glynis_Barnes-Mellish_-_Watercolor_Workshop_-_2006',
     'books/visual-books/An_Introduction_to_Oil_Painting_DK_Art_School',
     'books/visual-books/Norse_Myths',
-    'books/visual-books/A_History_of_Magic_Witchcraft_and_the_Occult_-_DK'
+    'books/visual-books/A_History_of_Magic_Witchcraft_and_the_Occult_-_DK',
+    'books/visual-books/Aircraft_The_Definitive_Visual_History_New_Edition_-_DK'
 ];
 
 const bookCount = visualBooks.length;
