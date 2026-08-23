@@ -49,7 +49,10 @@ const visualBooks = [
     'books/visual-books/dk_my_little_picture_bible',
     'books/visual-books/Alphabet_Poems',
     'books/visual-books/InteractiveLeveledBooksICanDailyTasks',
-    'books/visual-books/babys_first_chinese_new_year'
+    'books/visual-books/babys_first_chinese_new_year',
+    'books/visual-books/english_for_everyone_junior_5_words_a_day_learn',
+    'books/visual-books/help_your_kids_with_times_tables',
+    'books/visual-books/50_states_of_the_united_states_of_america'
 ];
 
 const bookCount = visualBooks.length;
