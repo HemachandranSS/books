@@ -39,7 +39,9 @@ const visualBooks = [
     'books/visual-books/macfarlane_t_dragon_world',
     'books/visual-books/leonardo_da_vinci_life_stories',
     'books/visual-books/queen_elizabeth_iilife_stories',
-    'books/visual-books/hilton_h_ed_stuff_to_know_when_you_start_school'
+    'books/visual-books/hilton_h_ed_stuff_to_know_when_you_start_school',
+    'books/visual-books/lost_in_the_clouds',
+    'books/visual-books/disney_princess_craft_book'
 ];
 
 const bookCount = visualBooks.length;
