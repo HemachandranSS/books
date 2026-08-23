@@ -37,7 +37,9 @@ const visualBooks = [
     'books/visual-books/my_first_vegetarian_cookbook',
     'books/visual-books/gladiators_riveting_reads',
     'books/visual-books/macfarlane_t_dragon_world',
-    'books/visual-books/leonardo_da_vinci_life_stories'
+    'books/visual-books/leonardo_da_vinci_life_stories',
+    'books/visual-books/queen_elizabeth_iilife_stories',
+    'books/visual-books/hilton_h_ed_stuff_to_know_when_you_start_school'
 ];
 
 const bookCount = visualBooks.length;
