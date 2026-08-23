@@ -41,7 +41,9 @@ const visualBooks = [
     'books/visual-books/queen_elizabeth_iilife_stories',
     'books/visual-books/hilton_h_ed_stuff_to_know_when_you_start_school',
     'books/visual-books/lost_in_the_clouds',
-    'books/visual-books/disney_princess_craft_book'
+    'books/visual-books/disney_princess_craft_book',
+    'books/visual-books/dk_readers_prelevel_1_in_the_park',
+    'books/visual-books/Avengers_The_Ultimate_Guide'
 ];
 
 const bookCount = visualBooks.length;
