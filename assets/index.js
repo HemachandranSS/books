@@ -43,7 +43,10 @@ const visualBooks = [
     'books/visual-books/lost_in_the_clouds',
     'books/visual-books/disney_princess_craft_book',
     'books/visual-books/dk_readers_prelevel_1_in_the_park',
-    'books/visual-books/Avengers_The_Ultimate_Guide'
+    'books/visual-books/Avengers_The_Ultimate_Guide',
+    'books/visual-books/a_first_bible_story_book',
+    'books/visual-books/dk_children_my_very_first_bible_stories',
+    'books/visual-books/dk_my_little_picture_bible'
 ];
 
 const bookCount = visualBooks.length;
