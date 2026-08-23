@@ -46,7 +46,10 @@ const visualBooks = [
     'books/visual-books/Avengers_The_Ultimate_Guide',
     'books/visual-books/a_first_bible_story_book',
     'books/visual-books/dk_children_my_very_first_bible_stories',
-    'books/visual-books/dk_my_little_picture_bible'
+    'books/visual-books/dk_my_little_picture_bible',
+    'books/visual-books/Alphabet_Poems',
+    'books/visual-books/InteractiveLeveledBooksICanDailyTasks',
+    'books/visual-books/babys_first_chinese_new_year'
 ];
 
 const bookCount = visualBooks.length;
