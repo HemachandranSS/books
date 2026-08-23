@@ -77,7 +77,8 @@ const visualBooks = [
     'books/visual-books/Super_Science_Encyclopedia_How_Science_Shapes_Our_World_by_Dorling_Kindersley',
     'books/visual-books/dk_first_space_encyclopedia',
     'books/visual-books/dk_see_how_they_go_spaceship',
-    'books/visual-books/dk_space_visual_encyclopedia'
+    'books/visual-books/dk_space_visual_encyclopedia',
+    'books/visual-books/The_Mysteries_of_the_Universe_Discover_the_best-kept_secrets_of_space_by_Will_Gater_z-lib_org'
 ];
 
 const bookCount = visualBooks.length;
