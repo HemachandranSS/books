@@ -95,7 +95,8 @@ const visualBooks = [
     'books/visual-books/A_History_of_Magic_Witchcraft_and_the_Occult_-_DK',
     'books/visual-books/Aircraft_The_Definitive_Visual_History_New_Edition_-_DK',
     'books/visual-books/Animal_-_David_Burnie',
-    'books/visual-books/Computer_Coding_Python_Projects_for_Kids_-_Carol_Vorderman'
+    'books/visual-books/Computer_Coding_Python_Projects_for_Kids_-_Carol_Vorderman',
+    'books/visual-books/Encyclopedia_of_Garden_Plants_for_Every_Location_-_DK'
 ];
 
 const bookCount = visualBooks.length;
