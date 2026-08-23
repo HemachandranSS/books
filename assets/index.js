@@ -55,7 +55,8 @@ const visualBooks = [
     'books/visual-books/50_states_of_the_united_states_of_america',
     'books/visual-books/Help_your_kids_with_English',
     'books/visual-books/Help_Your_kids_with_Math',
-    'books/visual-books/Help_Your_kids_with_Science'
+    'books/visual-books/Help_Your_kids_with_Science',
+    '/books/visual-books/Kniga_Help_Your_Kids_with_Computer_Coding'
 ];
 
 const bookCount = visualBooks.length;
