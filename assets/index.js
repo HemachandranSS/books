@@ -76,7 +76,8 @@ const visualBooks = [
     'books/visual-books/DK_-_Wonders_of_Nature_Ben_Hoare',
     'books/visual-books/Super_Science_Encyclopedia_How_Science_Shapes_Our_World_by_Dorling_Kindersley',
     'books/visual-books/dk_first_space_encyclopedia',
-    'books/visual-books/dk_see_how_they_go_spaceship'
+    'books/visual-books/dk_see_how_they_go_spaceship',
+    'books/visual-books/dk_space_visual_encyclopedia'
 ];
 
 const bookCount = visualBooks.length;
