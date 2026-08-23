@@ -70,7 +70,8 @@ const visualBooks = [
     'books/DK_-_Big_Book_of_Knowledge',
     'books/visual-books/Natural_Wonders_of_the_World_By_DK',
     'books/visual-books/Plant_DK_Eye_Wonder_by_Fleur_Star',
-    'books/visual-books/Christopher_Brickell_-_Encyclopedia_of_Plants_and_Flowers-DK_Publishing_2019'
+    'books/visual-books/Christopher_Brickell_-_Encyclopedia_of_Plants_and_Flowers-DK_Publishing_2019',
+    'books/visual-books/Scientists_Who_Changed_History'
 ];
 
 const bookCount = visualBooks.length;
