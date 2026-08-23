@@ -86,7 +86,8 @@ const visualBooks = [
     'books/visual-books/Quantum-Physics',
     'books/visual-books/How_Money_Works_-_The_Facts_Visually_Explained_2017',
     'books/visual-books/How_Business_Works',
-    'books/visual-books/DK-Essential-Managers-Innovation'
+    'books/visual-books/DK-Essential-Managers-Innovation',
+    'books/visual-books/How_to_Start_Your_Own_Business_The_Facts_Visually_Explained_DK'
 ];
 
 const bookCount = visualBooks.length;
