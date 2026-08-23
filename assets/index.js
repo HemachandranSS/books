@@ -68,7 +68,8 @@ const visualBooks = [
     'books/visual-books/DK_-_1000_Words_-_Science',
     'books/visual-books/Where_on_Earth_-_Dorling_Kindersley',
     'books/DK_-_Big_Book_of_Knowledge',
-    'books/visual-books/Natural_Wonders_of_the_World_By_DK'
+    'books/visual-books/Natural_Wonders_of_the_World_By_DK',
+    'books/visual-books/Plant_DK_Eye_Wonder_by_Fleur_Star'
 ];
 
 const bookCount = visualBooks.length;
