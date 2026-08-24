@@ -84,24 +84,40 @@ const visualBooks = [
     'books/visual-books/Universe_Third_Edition_by_DK',
     'books/visual-books/Simply_Quantum_Physics_Miezan_van_Zyl_Project_Editor',
     'books/visual-books/Quantum-Physics',
-    'books/visual-books/How_Money_Works_-_The_Facts_Visually_Explained_2017',
-    'books/visual-books/How_Business_Works',
-    'books/visual-books/DK-Essential-Managers-Innovation',
-    'books/visual-books/How_to_Start_Your_Own_Business_The_Facts_Visually_Explained_DK',
-    'books/visual-books/The_Law_Book_by_DK',
-    'books/visual-books/Glynis_Barnes-Mellish_-_Watercolor_Workshop_-_2006',
-    'books/visual-books/An_Introduction_to_Oil_Painting_DK_Art_School',
-    'books/visual-books/Norse_Myths',
-    'books/visual-books/A_History_of_Magic_Witchcraft_and_the_Occult_-_DK',
-    'books/visual-books/Aircraft_The_Definitive_Visual_History_New_Edition_-_DK',
-    'books/visual-books/Animal_-_David_Burnie',
-    'books/visual-books/Computer_Coding_Python_Projects_for_Kids_-_Carol_Vorderman',
-    'books/visual-books/Encyclopedia_of_Garden_Plants_for_Every_Location_-_DK',
-    'books/visual-books/Encyclopedia_Of_Herbal_Medicine_-_Andrew_Chevallier',
-    'books/visual-books/First_Animal_Encyclopedia_-_DK'
+    'https://hemachandranss.github.io/books1/books/visual-books/How_Money_Works_-_The_Facts_Visually_Explained_2017',
+    'https://hemachandranss.github.io/books1/books/visual-books/How_Business_Works',
+    'https://hemachandranss.github.io/books1/books/visual-books/DK-Essential-Managers-Innovation',
+    'https://hemachandranss.github.io/books1/books/visual-books/How_to_Start_Your_Own_Business_The_Facts_Visually_Explained_DK',
+    'https://hemachandranss.github.io/books1/books/visual-books/The_Law_Book_by_DK',
+    'https://hemachandranss.github.io/books1/books/visual-books/Glynis_Barnes-Mellish_-_Watercolor_Workshop_-_2006',
+    'https://hemachandranss.github.io/books1/books/visual-books/An_Introduction_to_Oil_Painting_DK_Art_School',
+    'https://hemachandranss.github.io/books1/books/visual-books/Norse_Myths',
+    'https://hemachandranss.github.io/books1/books/visual-books/A_History_of_Magic_Witchcraft_and_the_Occult_-_DK',
+    'https://hemachandranss.github.io/books1/books/visual-books/Aircraft_The_Definitive_Visual_History_New_Edition_-_DK',
+    'https://hemachandranss.github.io/books1/books/visual-books/Animal_-_David_Burnie',
+    'https://hemachandranss.github.io/books1/books/visual-books/Computer_Coding_Python_Projects_for_Kids_-_Carol_Vorderman',
+    'https://hemachandranss.github.io/books1/books/visual-books/Encyclopedia_of_Garden_Plants_for_Every_Location_-_DK',
+    'https://hemachandranss.github.io/books1/books/visual-books/Encyclopedia_Of_Herbal_Medicine_-_Andrew_Chevallier',
+    'https://hemachandranss.github.io/books1/books/visual-books/First_Animal_Encyclopedia_-_DK'
 ];
 
-const bookCount = visualBooks.length;
+const normalizeBookPath = (value) => {
+    if (!value) return '';
+    try {
+        const url = new URL(value, window.location.href);
+        const pathname = url.pathname.replace(/^\/+/, '').replace(/\/+$/, '');
+        const booksIndex = pathname.indexOf('books/');
+        return booksIndex >= 0 ? pathname.slice(booksIndex) : pathname;
+    } catch {
+        const cleaned = String(value).replace(/^\/+/, '').replace(/\/+$/, '');
+        const booksIndex = cleaned.indexOf('books/');
+        return booksIndex >= 0 ? cleaned.slice(booksIndex) : cleaned;
+    }
+};
+
+const relativeVisualBooks = visualBooks.map((book) => normalizeBookPath(book));
+
+const bookCount = relativeVisualBooks.length;
 const label = bookCount === 1 ? 'Book' : 'Books';
 
 document.getElementById('count').textContent = `${bookCount} ${label}`;

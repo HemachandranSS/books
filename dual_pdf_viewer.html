@@ -716,7 +716,7 @@
             showLoading();
             try {
                 const normalizedFolder = normalizeBookFolder(folder);
-                bookFolderPath = normalizedFolder.split('/').map(encodeURIComponent).join('/');
+                bookFolderPath = normalizedFolder;
                 bookPages = [];
                 bookPageBuffers = [];
                 bookHasMore = true;
@@ -811,7 +811,7 @@
                 return null;
             }
 
-            const pageUrl = `${normalizeBookFolder(bookFolderPath)}/${pageNum}.pdf`;
+            const pageUrl = new URL(`${normalizeBookFolder(bookFolderPath)}/${pageNum}.pdf`, window.location.origin + '/').toString();
             const response = await fetch(pageUrl, { method: 'GET' });
             if (!response.ok) {
                 bookHasMore = false;
@@ -832,7 +832,7 @@
             const probeNext = () => {
                 if (!bookMode || encodedFolder !== normalizeBookFolder(bookFolderPath)) return;
 
-                const pageUrl = `${encodedFolder}/${pageNum}.pdf`;
+                const pageUrl = new URL(`${encodedFolder}/${pageNum}.pdf`, window.location.origin + '/').toString();
                 fetch(pageUrl, { method: 'HEAD', cache: 'no-store' })
                     .then((response) => {
                         if (!response.ok) {
@@ -1111,12 +1111,16 @@
         }
 
         function normalizeBookFolder(folder) {
-            const cleaned = (folder || '')
-                .replace(/^\/+/, '')
-                .replace(/\/+$/, '');
-
-            if (!cleaned) return cleaned;
-            return cleaned.startsWith('books/') ? cleaned : `books/${cleaned}`;
+            const raw = (folder || '').trim();
+            if (!raw) return '';
+            if (/^https?:\/\//i.test(raw)) {
+                try {
+                    return new URL(raw).pathname.replace(/\/+$/, '');
+                } catch {
+                    return raw.replace(/\/+$/, '');
+                }
+            }
+            return raw.replace(/\/+$/, '');
         }
     </script>
 </body>
